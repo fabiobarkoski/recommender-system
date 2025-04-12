@@ -1,0 +1,53 @@
+[project]
+name = "biso"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.15.2",
+    "asyncpg>=0.30.0",
+    "bcrypt>=4.3.0",
+    "fastapi[standard]>=0.115.12",
+    "pandas>=2.2.3",
+    "psycopg2-binary>=2.9.10",
+    "pyjwt>=2.10.1",
+    "pytest>=8.3.5",
+    "python-dotenv>=1.1.0",
+    "redis>=5.2.1",
+    "sqlmodel>=0.0.24",
+]
+
+[dependency-groups]
+dev = [
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.0",
+    "python-lsp-server[all]>=1.12.2",
+    "ruff>=0.11.5",
+    "taskipy>=1.14.1",
+]
+
+[tool.ruff]
+line-length = 79
+extend-exclude = ['migrations']
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT', 'FAST']
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+
+[tool.coverage.run]
+concurrency = ["thread", "greenlet"]
+
+[tool.taskipy.tasks]
+migrate = "alembic upgrade head"
+create-migration = "alembic revision --autogenerate -m "
+test = "pytest -s -x --cov=. -vv"
+post_test = "coverage html"
+lint = "ruff check"
+pre_format = "ruff check --fix"
+format = "ruff format"
+run-dev = "fastapi dev recsys/main.py"
