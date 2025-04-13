@@ -1,0 +1,6 @@
+README.md
+htmlcov/
+docker-compose.yaml
+Dockerfile
+tests
+uv.lock

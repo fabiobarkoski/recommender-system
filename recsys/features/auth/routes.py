@@ -2,9 +2,13 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
+from recsys.common import security
+from recsys.features.auth.application import (
+    create_access_token,
+    get_current_user,
+)
 from recsys.features.auth.model import Auth, Token
 from recsys.features.users.model import User
-from recsys.features.auth.application import create_access_token, get_current_user
 
 router = APIRouter(
     prefix="/auth",
@@ -22,5 +26,7 @@ async def get_access_token(auth_req: Auth) -> Token:
 async def refresh_access_token(
     current_user: Annotated[User, Depends(get_current_user)]
 ) -> Token:
-    new_access_token = await create_access_token(current_user.email)
+    new_access_token = security.create_access_token(
+        {"sub": current_user.email}
+    )
     return {"access_token": new_access_token, "token_type": "bearer"}

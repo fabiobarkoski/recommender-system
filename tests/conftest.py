@@ -1,9 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from recsys.main import app
-from recsys.features.users.model import User
 from recsys.common.security import get_password_hash
+from recsys.features.users.model import User
+from recsys.main import app
 
 
 @pytest.fixture

@@ -16,6 +16,7 @@ dependencies = [
     "python-dotenv>=1.1.0",
     "redis>=5.2.1",
     "sqlmodel>=0.0.24",
+    "taskipy>=1.14.1",
 ]
 
 [dependency-groups]
@@ -24,7 +25,6 @@ dev = [
     "pytest-mock>=3.14.0",
     "python-lsp-server[all]>=1.12.2",
     "ruff>=0.11.5",
-    "taskipy>=1.14.1",
 ]
 
 [tool.ruff]
@@ -43,11 +43,17 @@ addopts = '-p no:warnings'
 concurrency = ["thread", "greenlet"]
 
 [tool.taskipy.tasks]
+# migrations
 migrate = "alembic upgrade head"
 create-migration = "alembic revision --autogenerate -m "
+# dev environment
 test = "pytest -s -x --cov=. -vv"
 post_test = "coverage html"
 lint = "ruff check"
 pre_format = "ruff check --fix"
 format = "ruff format"
+# other commands
 run-dev = "fastapi dev recsys/main.py"
+run-prod = "fastapi run recsys/main.py"
+export-deps = "uv export --no-dev --format requirements-txt > requirements.txt"
+export-deps-dev = "uv export --format requirements-txt > requirements-dev.txt"

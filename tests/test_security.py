@@ -1,7 +1,7 @@
 import os
 
-from jwt import decode
 from fastapi import status
+from jwt import decode
 
 from recsys.common.security import create_access_token
 

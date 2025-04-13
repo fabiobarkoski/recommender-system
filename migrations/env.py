@@ -10,6 +10,7 @@ from sqlmodel import SQLModel
 from dotenv import load_dotenv
 from recsys.features.movies.model import *
 from recsys.features.users.model import *
+from recsys.features.ratings.model import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

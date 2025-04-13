@@ -1,8 +1,8 @@
 import os
-from contextlib import contextmanager, asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 
-from redis import Redis
 from dotenv import load_dotenv
+from redis import Redis
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
@@ -18,8 +18,10 @@ def create_db():
 
 @contextmanager
 def redis_connection():
-    with Redis(host=os.getenv("REDIS_HOST"), port=os.getenv("REDIS_POST"),
-               password=os.getenv("REDIS_PASSWORD"), decode_responses=True) as r:
+    with Redis(host=os.getenv("REDIS_HOST"),
+               port=int(os.getenv("REDIS_PORT")),
+               password=os.getenv("REDIS_PASSWORD"),
+               decode_responses=True) as r:
         yield r
 
 

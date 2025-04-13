@@ -1,7 +1,7 @@
 from fastapi import status
 
-from recsys.features.users.model import User
 from recsys.common.security import get_password_hash
+from recsys.features.users.model import User
 
 
 def test_login_token(client, mocker):
@@ -24,3 +24,18 @@ def test_login_token(client, mocker):
     assert response.status_code == status.HTTP_200_OK
     assert "access_token" in token
     assert "token_type" in token
+    assert token["token_type"] == "bearer"
+
+
+def test_refresh_token(client, token):
+    response = client.post(
+        "/auth/refresh-token",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    token = response.json()
+
+    assert response.status_code == status.HTTP_200_OK
+    assert "access_token" in token
+    assert "token_type" in token
+    assert token["token_type"] == "bearer"
