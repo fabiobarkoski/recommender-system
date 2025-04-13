@@ -50,6 +50,11 @@ async def get_movie_ratings(movie_id: int) -> list[RatingPublic]:
 async def create_movie_rating(
     movie_id: int, user_id: int, rating: RatingBase
 ) -> RatingPublic:
+    if not (0 <= rating.rating <= 5):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Rating must be between 0 and 5"
+        )
     movie = await get_movie(movie_id)
     created_rating = await repository.create_movie_rating(movie, user_id,
                                                           rating)
