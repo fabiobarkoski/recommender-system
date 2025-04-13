@@ -21,7 +21,7 @@ Pontos chaves das recomendações:
 
 ### Todos atores e diretores
 
-Existe uma versão que ao invés de levar em consideração os atores e diretores favoritos do usuário, baseia-se em todos os atores e diretores dos filmes que o usuário avaliou/assitiu.
+Existe uma [versão](https://github.com/fabiobarkoski/recommender-system/tree/all-actors-directors) que ao invés de levar em consideração os atores e diretores favoritos do usuário, baseia-se em todos os atores e diretores dos filmes que o usuário avaliou/assitiu.
 
 ## Uso
 A forma mais prática de rodar o projeto é criar um arquivo `.env` baseado no `.env.example` e executar via Docker Compose.
