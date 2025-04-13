@@ -101,13 +101,14 @@ async def get_ratings(user_id: int):
     return ratings
 
 
+<<<<<<< HEAD
 def get_favorites_values(favorites) -> list[str]:
     return [favorite.model_dump()["name"] for favorite in favorites]
 
 
 async def get_user_infos(
     user_id: int
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, list[str], list[str]]:
     ratings = await get_ratings(user_id)
     ratings_df = pd.DataFrame([rating for rating in ratings])
     ratings_df = ratings_df.drop(columns=[
@@ -116,7 +117,14 @@ async def get_user_infos(
                                      "directors"
                                  ])
 
-    return ratings_df
+    favorite_actors = get_favorites_values(
+        await repository.get_favorite_actors(user_id)
+    )
+    favorite_directors = get_favorites_values(
+        await repository.get_favorite_directors(user_id)
+    )
+
+    return ratings_df, favorite_actors, favorite_directors
 
 
 def generate_favorites_df(
@@ -141,6 +149,8 @@ def generate_favorites_df(
     return result_df
 
 
+=======
+>>>>>>> 89aa786 (all actors directors)
 def generate_df(base_df: pd.DataFrame, name: str) -> pd.DataFrame:
     values_rows = []
 
@@ -216,12 +226,43 @@ def just_movies_genres(
     return movies_and_genres
 
 
+<<<<<<< HEAD
 def remove_watcheds_and_sort_recommendations(
     user_profile: pd.DataFrame,
     user_ratings_df: pd.DataFrame,
     genres_df: pd.DataFrame,
     just_movies_and_genres: pd.DataFrame
 ) -> list[int]:
+=======
+async def generate_recommendation(
+    user_id: int, top_n: int = 20
+) -> list[dict[str, str]]:
+    movies = await get_movies()
+    base_df = pd.DataFrame([movie.model_dump() for movie in movies])
+    ratings = await get_ratings(user_id)
+    user_ratings_df = pd.DataFrame([rating for rating in ratings])
+    user_ratings_df = user_ratings_df.drop(columns=[
+                                               "genres",
+                                               "actors",
+                                               "directors"
+                                           ])
+
+    # based on all actors,directors from watched movies
+    genres_df = generate_df(base_df, "genres")
+    actors_df = generate_df(base_df, "actors")
+    directors_df = generate_df(base_df, "directors")
+
+    user_profile = await generate_user_profile(user_id, genres_df,
+                                               actors_df, directors_df,
+                                               user_ratings_df)
+    logger.info(
+        f"User Profile:\n{user_profile.sort_values(ascending=False).head(20)}"
+    )
+
+    just_movies_and_genres = just_movies_genres(genres_df, actors_df,
+                                                directors_df)
+
+>>>>>>> 89aa786 (all actors directors)
     watcheds = genres_df[genres_df["title"].isin(user_ratings_df["title"])]
 
     recommendations = (
@@ -242,7 +283,7 @@ def remove_watcheds_and_sort_recommendations(
 async def generate_recommendation(
     user_id: int
 ) -> list[dict[str, str]]:
-    user_ratings_df = await get_user_infos(
+    user_ratings_df, favorite_actors, favorite_directors = await get_user_infos(
         user_id
     )
 
@@ -250,8 +291,12 @@ async def generate_recommendation(
     base_df = pd.DataFrame([movie.model_dump() for movie in movies])
 
     genres_df = generate_df(base_df, "genres")
-    actors_df = generate_df(base_df, "actors")
-    directors_df = generate_df(base_df, "directors")
+    actors_df = generate_favorites_df(
+        base_df, favorite_actors, "actors"
+    )
+    directors_df = generate_favorites_df(
+        base_df, favorite_directors, "directors"
+    )
 
     user_profile = await generate_user_profile(genres_df, actors_df,
                                                directors_df, user_ratings_df)
