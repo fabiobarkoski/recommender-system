@@ -1,90 +1,23 @@
 
-# Content-Based Recommender System
-
-API de sistema de recomendaçao, da qual possui recomendação de filmes baseada em conteúdo.
-
-## Stack
-- [Vertical Slice Architecture](https://www.milanjovanovic.tech/blog/vertical-slice-architecture)
-- FastAPI
-- SQLModel
-- Pydantic
-- Pandas
-
-## Recomendações
-Para as recomendações leva-se em consideração os filmes que o usuário avaliou, do qual presumi-se que ele assistiu, e seus atores e diretores favoritos. A partir disso o sistema recomenda os filmes.
-
-Pontos chaves das recomendações:
-- Avaliações do usuário
-- Gêneros dos filmes assistidos
-- Atores favoritos
-- Diretores favoritos
-
-### Todos atores e diretores
-
-Existe uma [versão](https://github.com/fabiobarkoski/recommender-system/tree/all-actors-directors) que ao invés de levar em consideração os atores e diretores favoritos do usuário, baseia-se em todos os atores e diretores dos filmes que o usuário avaliou/assitiu.
-
-## Uso
-A forma mais prática de rodar o projeto é criar um arquivo `.env` baseado no `.env.example` e executar via Docker Compose.
-
-### Ambiente de desenvolvimento
-Para configurar o ambiente local de desenvolvimento:
-- Instale as dependências a partir do `requirements-dev.txt`:
-    ```python
-    pip install -r requirements-dev.txt
-    ```
-- Utilize os comandos via `task` para facilitar o fluxo de desenvolvimento.
-
-#### IMPORTANTE
-Para maior [segurança](https://brokkr.net/2022/03/29/publishing-docker-ports-to-127-0-0-1-instead-of-0-0-0-0/), garanta que os serviços Docker estejam acessíveis apenas localmente. Use o IP de loopback (`127.0.0.1`) ao invés de `0.0.0.0`.
-
-### Comandos:
-| Comando | Descrição |
-| ------- | --------- |  
-|`task create-migration`| Cria uma migração. Exemplo: `task create-migraton "my-migration"`|
-| `task migrate`| Executa a migração no banco|
-| `task test`| Executa os testes|
-| `task list`| Executa o linter|
-| `task format` | Executa o linter e então formata o código|
-|`task run-dev`|Executa o FastAPI em dev mode|
-|`task run-prod`|Executa o FastAPI para produção|
-|`task export-deps-prod`|Exporta as depedencias minimas|
-|`task export-deps-dev`|Exporta as depedencias com as depedencias de desenvolvimento|
-
-### Exempo de `.env`
-Caso for rodar via docker compose, por favor, coloque como server/host a identificação do serviço. Exemplo:
-- Postgres -> `db`
-- Redis -> `cache`
-```
-POSTGRES_USER=my-user
-POSTGRES_PASSWORD=super-stronger123
-POSTGRES_SERVER=localhost
-POSTGRES_DB=movies
-POSTGRES_PORT=5432
-POSTGRES_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_SERVER}/${POSTGRES_DB}
-#alembic without async migraton
-ALEMBIC_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_SERVER}/${POSTGRES_DB}
-
-REDIS_HOST=localhost
-REDIS_PASSWORD=super-stronger123
-REDIS_PORT=6379
-# cache time in seconds
-CACHE_TIME=300
-
-#API
-SECRET_KEY=super-secret
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=60
-
-#features flag
-TOP_N=20
-```
 ## Documentação API
 Abaixo segue a Documentação da API, mas para uma experiencia mais interativa, considere acessar os seguintes endpoints na API:
-- `API_link/doc`
-- `API_link/redo`
+- `API_link/docs`
+- `API_link/redoc`
 
 ### Importante
 Com excessão da criação de usuário e login, todos os endpoints necessitam um Authorization token.
+
+### Autenticando
+Para autenticar envie uma requisicão post para o endpoint `/users` para criar um usuário, com o seguinte payload:
+```json
+{
+    "name": "myuser",
+    "email": "myuser@email.com",
+    "password": "super-stronger"
+}
+```
+
+Em seguida realize o login recebendo um `access_token` em `/auth/token`. Caso sua sessão for expirar renove-a enviando o `access_token` para `refresh-token`.
 
 ### Recurso usuários
 
