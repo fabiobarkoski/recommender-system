@@ -47,8 +47,9 @@ Para maior [segurança](https://brokkr.net/2022/03/29/publishing-docker-ports-to
 | `task format` | Executa o linter e então formata o código|
 |`task run-dev`|Executa o FastAPI em dev mode|
 |`task run-prod`|Executa o FastAPI para produção|
-|`task export-deps-prod`|Exporta as depedencias minimas|
+|`task export-deps`|Exporta as depedencias minimas|
 |`task export-deps-dev`|Exporta as depedencias com as depedencias de desenvolvimento|
+|`task populate-db`|Adiciona registros localizados no `/scripts` ao banco|
 
 ### Exempo de `.env`
 Caso for rodar via docker compose, por favor, coloque como server/host a identificação do serviço. Exemplo:
@@ -78,6 +79,12 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 #features flag
 TOP_N=20
 ```
+
+### Registros pré-salvos
+Caso você queria apenas testar a recomendação e não deseja criar milhares de registros manualmente, execute o comando `task populate-db`, dessa maneira o comando irá executar `populate.db` dentro de `/scripts` e irá salvar no bancos registros do `movies_dataset`.
+
+IMPORTANTE: Para o script executar sem probelmas, altere o `POSTGRES_SERVER` para `localhost`.
+
 ## Documentação API
 Abaixo segue a Documentação da API, mas para uma experiencia mais interativa, considere acessar os seguintes endpoints na API:
 - `API_link/docs`
